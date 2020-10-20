@@ -1,6 +1,6 @@
 # In-Home
 Base de Datos 
-Comandos para actualizar la Base de Datos.
+Comandos para crear la Base de Datos y realizando la migración.
 
     Add-Migration Migration1
     Update-Database
