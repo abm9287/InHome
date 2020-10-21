@@ -18,6 +18,7 @@ namespace In_Home.Areas.Users.Pages.Account
         private UserManager<IdentityUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
         private LUsersRoles _usersRole;
+
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -27,6 +28,7 @@ namespace In_Home.Areas.Users.Pages.Account
             _signInManager = signInManager;
             _roleManager = roleManager;
             _usersRole = new LUsersRoles();
+
         }
         public void OnGet()
         {
