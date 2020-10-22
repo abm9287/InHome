@@ -10,10 +10,9 @@ namespace In_Home.Library
 {
     public class Uploadimage
     {
-        public async Task<byte[]> ByteAvatarImageAsync(IFormFile AvatarImage, IWebHostEnvironment environment)
+        public async Task<byte[]> ByteAvatarImageAsync(IFormFile AvatarImage, IWebHostEnvironment environment, string image)
         {
-            string image = "images/images/user1.png";
-            if(AvatarImage != null)
+             if(AvatarImage != null)
             {
                 using (var memoryStream = new MemoryStream())
                 {

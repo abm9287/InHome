@@ -106,7 +106,22 @@ namespace In_Home.Areas.Users.Pages.Account
                                 {
                                     await _userManager.AddToRoleAsync(user, Input.Role);
                                     var dataUser = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList().Last();
-                                    var imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment);
+                                    var imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment, "images/images/user1.png");
+                                    var t_user = new TUsers
+                                    {
+                                        Name = Input.Name,
+                                        LastName = Input.LastName,
+                                        CI = Input.CI,
+                                        Email = Input.Email,
+                                        IdUser = dataUser.Id,
+                                        Image = imageByte,
+                                    };
+                                    await _context.AddAsync(t_user);
+                                    _context.SaveChanges();
+
+                                    transaction.Commit();
+                                    _dataInput = null;
+                                    valor = true;
 
                                 }
                                 else
@@ -117,6 +132,7 @@ namespace In_Home.Areas.Users.Pages.Account
 
                                     }
                                     valor = false;
+                                    transaction.Rollback();
                                 }
                             }
                             catch(Exception ex)
@@ -130,13 +146,19 @@ namespace In_Home.Areas.Users.Pages.Account
                 }
                 else
                 {
+                    foreach(var modelState in ModelState.Values)
+                    {
+                        foreach(var error in modelState.Errors)
+                        {
+                            _dataInput.ErrorMessage += error.ErrorMessage;
+                        }
+                    }
                     _dataInput.ErrorMessage = $"The  {Input.Email} is registered ";
                     valor = false;
                 }
             }
             else
             {
-                _dataInput.ErrorMessage = "Select a role";
                 valor = false;
             }
             return valor;
