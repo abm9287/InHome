@@ -18,6 +18,7 @@ namespace In_Home.Areas.Users.Pages.Account
         private UserManager<IdentityUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
         private LUsersRoles _usersRole;
+        private static InputModel _dataInput;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -32,10 +33,20 @@ namespace In_Home.Areas.Users.Pages.Account
         }
         public void OnGet()
         {
-            Input = new InputModel
+            if(_dataInput != null)
             {
-                rolesLista = _usersRole.getRoles(_roleManager) 
-            };
+                Input = _dataInput;
+                Input.rolesLista = _usersRole.getRoles(_roleManager);
+                Input.AvatarImage = null;
+            }
+            else
+            {
+                Input = new InputModel
+                {
+                    rolesLista = _usersRole.getRoles(_roleManager)
+                };
+            }
+          
         }
         [BindProperty]
         public InputModel Input { get; set; }
@@ -45,6 +56,24 @@ namespace In_Home.Areas.Users.Pages.Account
             [TempData]
             public string ErrorMessage { get; set; }
             public List<SelectListItem> rolesLista { get; set; }
+        }
+        public async Task<IActionResult> OnPost()
+        {
+            if(await SaveAsync())
+            {
+                return Redirect("/Users/Users?are=Users");
+            }
+            else
+            {
+                return Redirect("/Users/Register");
+            }
+        }
+        private async Task<bool> SaveAsync()
+        {
+            _dataInput = Input;
+            var valor = false;
+
+            return valor;
         }
     }
 }
