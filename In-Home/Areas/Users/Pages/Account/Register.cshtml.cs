@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using In_Home.Areas.Users.Models;
+using In_Home.Data;
 using In_Home.Library;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -17,14 +18,18 @@ namespace In_Home.Areas.Users.Pages.Account
         private SignInManager<IdentityUser> _signInManager;
         private UserManager<IdentityUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
+        private ApplicationDbContext _context;
         private LUsersRoles _usersRole;
         private static InputModel _dataInput;
+
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
@@ -72,7 +77,24 @@ namespace In_Home.Areas.Users.Pages.Account
         {
             _dataInput = Input;
             var valor = false;
-
+            if(ModelState.IsValid)
+            {
+                var userList = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList();
+                if(userList.Count.Equals(0))
+                {
+                    var strategy = _context.Database.CreateExecutionStrategy();
+                }
+                else
+                {
+                    _dataInput.ErrorMessage = $"The  {Input.Email} is registered ";
+                    valor = false;
+                }
+            }
+            else
+            {
+                _dataInput.ErrorMessage = "Select a role";
+                valor = false;
+            }
             return valor;
         }
     }
