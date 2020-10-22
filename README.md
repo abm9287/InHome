@@ -20,3 +20,12 @@ Roles
 Tabla TUsers
 ![imagen](https://user-images.githubusercontent.com/49075053/96913218-f97ff900-1468-11eb-983b-37ddd827701e.png)
 
+_______________________________________________________________________________________________________________________________________________________________________________
+Se registrará un nuevo usuario 'no real'  con el nombre Fernando y sus correspondiente datos
+![imagen](https://user-images.githubusercontent.com/49075053/96916020-96906100-146c-11eb-9ee3-b4fc9971cd5e.png)
+
+
+Registro de un usuario
+
+![imagen](https://user-images.githubusercontent.com/49075053/96916068-a9a33100-146c-11eb-8d34-2c243bd848b6.png)
+Registro exitoso del nuevo usuario
