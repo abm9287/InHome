@@ -38,3 +38,22 @@ Verificación del registro en la base de datos
 Se consigue los mensaje de errores
 ![imagen](https://user-images.githubusercontent.com/49075053/96918835-88dcda80-1470-11eb-803f-62de41bf8224.png)
 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+![imagen](https://user-images.githubusercontent.com/49075053/96920984-8760e180-1473-11eb-9489-4ebdd8ca307b.png)
+Usuario Caterine
+
+![imagen](https://user-images.githubusercontent.com/49075053/96921449-284f9c80-1474-11eb-8662-f4655b6e8eaf.png)
+
+Sale un Error => Passwords must have at least one lowercase ('a'-'z'). 
+
+![imagen](https://user-images.githubusercontent.com/49075053/96921520-44533e00-1474-11eb-8722-976ce5147f8a.png)
+Se rectificó el error
+
+![imagen](https://user-images.githubusercontent.com/49075053/96921569-57660e00-1474-11eb-8031-382c08eccf3f.png)
+Caterine está registrada
+
+_______________________________________________________
+Varificación de los datos registrados en la Base de Datos
+![imagen](https://user-images.githubusercontent.com/49075053/96921810-a1e78a80-1474-11eb-8716-c7e1a9841b00.png)
+
+
