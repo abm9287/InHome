@@ -1,4 +1,12 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿var principal = new Principal();
 
-// Write your JavaScript code.
+var user = new User();
+//Función imageUser esta funcion recibirá el parámetro que es el evento evt
+var imageUser = (evt) => {
+    user.archivo(evt, "imageUser");
+}
+
+$().ready(() => {
+    let URLactual = window.location.pathname;
+    principal.userLink(URLactual);
+});
