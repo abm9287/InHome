@@ -29,3 +29,8 @@ Registro de un usuario
 
 ![imagen](https://user-images.githubusercontent.com/49075053/96916068-a9a33100-146c-11eb-8d34-2c243bd848b6.png)
 Registro exitoso del nuevo usuario
+
+Verificación del registro en la base de datos
+
+![imagen](https://user-images.githubusercontent.com/49075053/96916550-4d8cdc80-146d-11eb-9be4-e75627536a1a.png)
+![imagen](https://user-images.githubusercontent.com/49075053/96916592-60071600-146d-11eb-9714-757f08cc7dfc.png)
