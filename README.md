@@ -57,3 +57,8 @@ Varificación de los datos registrados en la Base de Datos
 ![imagen](https://user-images.githubusercontent.com/49075053/96921810-a1e78a80-1474-11eb-8716-c7e1a9841b00.png)
 
 
+______________________________________________________________________________________________________________________________________________________________________
+Lista de usuarios registrados
+![imagen](https://user-images.githubusercontent.com/49075053/97046095-7b8d2200-153c-11eb-8b05-1c0d1cf950d4.png)
+
+
