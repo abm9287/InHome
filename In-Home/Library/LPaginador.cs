@@ -83,7 +83,12 @@ namespace In_Home.Library
                 pagina_url = pagina_totalPaginas; //será el número de páginas al que enlazamos
                 pagina_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/" + action + "?id=" + pagina_url + "&registros" + pagina_cuantos + "&area=" + area + "'>" + pagina_nav_ultima + "</a>";
             }
-            return null;
+            //Obtención de los registros que se mostrarán en la página actual
+            int pagina_inicial = (pagina_actual - 1) * pagina_cuantos;
+            var query = table.Skip(pagina_inicial).Take(pagina_cuantos).ToList(); //Consulta SQL que devuelve cantidad de registros empezando desde pagina_inicial
+            String pagina_informacion = "del <br>" + pagina_actual + "</br> al <br>" + pagina_totalPaginas + "</br> de <br>" + pagina_totalRegistro + "</br> <br>" + pagina_cuantos + "</br>";
+            object[] data = { pagina_informacion, pagina_navegacion, query };
+            return data;
         }
     }
 }

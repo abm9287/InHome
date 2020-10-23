@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -26,5 +27,11 @@ namespace In_Home.Areas.Users.Models
         public string Password { get; set; }
         [Required(ErrorMessage = "Password field is required")]
         public string Role { get; set; }
+
+        //Propiedades
+        public string ID { get; set; }
+        public int Id { get; set; }
+        public byte[] Image { get; set; }
+        public IdentityUser IdentityUser { get; set; }
     }
 }
