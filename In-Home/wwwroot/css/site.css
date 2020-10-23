@@ -34,17 +34,21 @@ input[type="file"] {
 }
 
 .imageUser {
-    max-width: 100px;
+    max-width: 100%;
 }
 
 .imageUsers {
-    max-width: 100px;
+    max-width: 100%;
     height: 70px;
+}
+
+.imageUserDetails {
+    max-width: 50%;
 }
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 @media (min-width: 768px) {
   html {
