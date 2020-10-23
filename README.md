@@ -61,4 +61,12 @@ ________________________________________________________________________________
 Lista de usuarios registrados
 ![imagen](https://user-images.githubusercontent.com/49075053/97046615-42a17d00-153d-11eb-9c25-178dd2115336.png)
 
+----------------------------------Detalles del usuario registrado 'Usuario o Administrador.----------------------------------------------------------
+![imagen](https://user-images.githubusercontent.com/49075053/97058048-5f947b00-1552-11eb-9510-ac773604e7c2.png)
 
+
+Information
+C.I
+Name
+Phone Number 
+Email
