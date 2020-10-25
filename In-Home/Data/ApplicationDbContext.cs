@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using In_Home.Areas.Users.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +13,6 @@ namespace In_Home.Data
             : base(options)
         {
         }
+        public DbSet<TUsers> TUsers { get; set; }
     }
 }

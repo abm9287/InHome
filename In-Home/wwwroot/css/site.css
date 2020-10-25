@@ -23,7 +23,19 @@ a {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+/*Aplica el estilo en el Input*/
+input[type="file"] {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
 
+.imageUser {
+    max-width: 100%;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
