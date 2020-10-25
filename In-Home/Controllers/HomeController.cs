@@ -6,20 +6,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using In_Home.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace In_Home.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        IServiceProvider _serviceProvider;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IServiceProvider serviceProvider)
         {
-            _logger = logger;
+            _serviceProvider = serviceProvider;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            await CreateRolesAsync(_serviceProvider);
             return View();
         }
 
@@ -32,6 +35,19 @@ namespace In_Home.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        private async Task CreateRolesAsync(IServiceProvider serviceProvider) 
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            String[] rolesName = { "Admin", "User" };
+            foreach (var item in rolesName)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(item);
+                if (!roleExist)
+                {
+                    await roleManager.CreateAsync(new IdentityRole(item));
+                }
+            }
         }
     }
 }
