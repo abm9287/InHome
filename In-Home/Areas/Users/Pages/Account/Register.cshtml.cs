@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace In_Home.Areas.Users.Pages.Account
 {
@@ -24,6 +25,7 @@ namespace In_Home.Areas.Users.Pages.Account
         private LUsersRoles _usersRole;
         private static InputModel _dataInput;
         private Uploadimage _uploadimage; 
+        private static InputModelRegister _dataUser1, _dataUser2;
         private IWebHostEnvironment _environment;
 
 
@@ -45,7 +47,7 @@ namespace In_Home.Areas.Users.Pages.Account
         }
         public void OnGet()
         {
-            if(_dataInput != null)
+            if (_dataInput != null)
             {
                 Input = _dataInput;
                 Input.rolesLista = _usersRole.getRoles(_roleManager);
@@ -58,7 +60,23 @@ namespace In_Home.Areas.Users.Pages.Account
                     rolesLista = _usersRole.getRoles(_roleManager)
                 };
             }
-          
+            if (_dataUser1 != null)
+            {
+                Input = new InputModel
+                {
+                    Name = _dataUser1.Name,
+                    LastName = _dataUser1.LastName,
+                    CI = _dataUser1.CI,
+                    Email = _dataUser1.Email,
+                    Image = _dataUser1.Image,
+                    PhoneNumber = _dataUser1.IdentityUser.PhoneNumber,
+                    rolesLista = getRoles(_dataUser1.Role),
+
+                };
+            }
+            _dataUser2 = _dataUser1;
+            _dataUser1 = null;
+
         }
         [BindProperty]
         public InputModel Input { get; set; }
@@ -69,16 +87,26 @@ namespace In_Home.Areas.Users.Pages.Account
             public string ErrorMessage { get; set; }
             public List<SelectListItem> rolesLista { get; set; }
         }
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost(String dataUser)
         {
-            if(await SaveAsync())
+            if (dataUser == null)
             {
-                return Redirect("/Users/Users?are=Users");
+
+                if (await SaveAsync())
+                {
+                    return Redirect("/Users/Users?area=Users");
+                }
+                else
+                {
+                    return Redirect("/Users/Register");
+                }
             }
             else
             {
+                _dataUser1 = JsonConvert.DeserializeObject<InputModelRegister>(dataUser);
                 return Redirect("/Users/Register");
             }
+
         }
         private async Task<bool> SaveAsync()
         {
@@ -162,6 +190,25 @@ namespace In_Home.Areas.Users.Pages.Account
                 valor = false;
             }
             return valor;
+        }
+        private List<SelectListItem> getRoles(String role)
+        {
+            List<SelectListItem> rolesLista = new List<SelectListItem>();
+            rolesLista.Add(new SelectListItem 
+            {
+                Text = role
+            });
+            var roles = _usersRole.getRoles(_roleManager);
+            roles.ForEach(item => {
+                if (item.Text != role)
+                {
+                    rolesLista.Add(new SelectListItem 
+                    {
+                        Text = item.Text
+                    });
+                }
+            });
+            return rolesLista;
         }
     }
 }
