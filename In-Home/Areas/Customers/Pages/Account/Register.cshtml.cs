@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using In_Home.Areas.Customers.Models;
-using In_Home.Data;
-using In_Home.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using In_Home.Areas.Customers.Models;
+using In_Home.Data;
+using In_Home.Library;
+
 
 namespace In_Home.Areas.Customers.Pages.Account
 {
