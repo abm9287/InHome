@@ -72,7 +72,7 @@
                                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                                         </div>
 
-                                        @if (Model.Input.Email == null)
+                                        @if (Model.Input.Id.Equals(0))
                                         {
                                             <div class="form-group">
                                                 <input asp-for="Input.Password" placeholder="Password" class="form-control" />
@@ -81,7 +81,7 @@
                                         }
 
                                         <div class="form-group">
-                                            @if (Model.Input.Email != null)
+                                            @if (!Model.Input.Id.Equals(0))
                                             {
                                                 @Html.DropDownList("Input.Role", new SelectList(Model.Input.rolesLista, "Text", "Text"), new { @class = "form-control" });
                                             }
