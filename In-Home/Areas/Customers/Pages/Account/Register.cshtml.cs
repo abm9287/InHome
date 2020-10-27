@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using In_Home.Areas.Customers.Models;
 using In_Home.Data;
 using In_Home.Library;
+using SalesSystem.Data;
 
 namespace In_Home.Areas.Customers.Pages.Account
 {
@@ -147,7 +148,7 @@ namespace In_Home.Areas.Customers.Pages.Account
                 }
                 else
                 {
-                    _dataInput.ErrorMessage = $"El {Input.CI} ya esta registrado";
+                    _dataInput.ErrorMessage = $"The {Input.CI} you are already registered";
                     valor = false;
                 }
             }
