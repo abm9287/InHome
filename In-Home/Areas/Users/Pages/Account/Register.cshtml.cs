@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using In_Home.Areas.Users.Models;
 using In_Home.Data;
 using In_Home.Library;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,8 @@ using Newtonsoft.Json;
 
 namespace In_Home.Areas.Users.Pages.Account
 {
+    [Authorize]
+    [Area("Users")]
     public class RegisterModel : PageModel
     {
         private SignInManager<IdentityUser> _signInManager;
@@ -24,11 +27,9 @@ namespace In_Home.Areas.Users.Pages.Account
         private ApplicationDbContext _context;
         private LUsersRoles _usersRole;
         private static InputModel _dataInput;
-        private Uploadimage _uploadimage; 
+        private Uploadimage _uploadimage;
         private static InputModelRegister _dataUser1, _dataUser2;
         private IWebHostEnvironment _environment;
-
-
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -43,17 +44,16 @@ namespace In_Home.Areas.Users.Pages.Account
             _environment = environment;
             _usersRole = new LUsersRoles();
             _uploadimage = new Uploadimage();
-
         }
         public void OnGet(int id)
         {
-            if(true.Equals(0))
+            if (id.Equals(0))
             {
                 _dataUser2 = null;
             }
             if (_dataInput != null || _dataUser1 != null || _dataUser2 != null)
             {
-                if(_dataInput != null)
+                if (_dataInput != null)
                 {
                     Input = _dataInput;
                     Input.rolesLista = _usersRole.getRoles(_roleManager);
@@ -61,9 +61,9 @@ namespace In_Home.Areas.Users.Pages.Account
                 }
                 else
                 {
-                    if(_dataUser1 != null || _dataUser2 !!= null) 
+                    if (_dataUser1 != null || _dataUser2 != null)
                     {
-                        if ((_dataUser2 != null))
+                        if (_dataUser2 != null)
                             _dataUser1 = _dataUser2;
                         Input = new InputModel
                         {
@@ -76,7 +76,7 @@ namespace In_Home.Areas.Users.Pages.Account
                             PhoneNumber = _dataUser1.IdentityUser.PhoneNumber,
                             rolesLista = getRoles(_dataUser1.Role),
                         };
-                        if(_dataInput != null)
+                        if (_dataInput != null)
                         {
                             Input.ErrorMessage = _dataInput.ErrorMessage;
                         }
@@ -90,9 +90,9 @@ namespace In_Home.Areas.Users.Pages.Account
                     rolesLista = _usersRole.getRoles(_roleManager)
                 };
             }
+
             _dataUser2 = _dataUser1;
             _dataUser1 = null;
-
         }
         [BindProperty]
         public InputModel Input { get; set; }
@@ -109,28 +109,45 @@ namespace In_Home.Areas.Users.Pages.Account
             {
                 if (_dataUser2 == null)
                 {
-                    if (await SaveAsync())
+                    if (User.IsInRole("Admin"))
+                    {
+                        if (await SaveAsync())
+                        {
+                            return Redirect("/Users/Users?area=Users");
+                        }
+                        else
+                        {
+                            return Redirect("/Users/Register");
+                        }
+                    }
+                    else
                     {
                         return Redirect("/Users/Users?area=Users");
                     }
-                    else
-                    {
-                        return Redirect("/Users/Register");
-                    }
+
                 }
                 else
                 {
-                    if(await UpdateAsync())
+                    if (User.IsInRole("Admin"))
                     {
-                        var url = $"/Users/Account/Details?id={_dataUser2.Id}";
-                        _dataUser2 = null;
-                        return Redirect(url);
+                        if (await UpdateAsync())
+                        {
+                            var url = $"/Users/Account/Details?id={_dataUser2.Id}";
+                            _dataUser2 = null;
+                            return Redirect(url);
+                        }
+                        else
+                        {
+                            return Redirect("/Users/Register");
+                        }
                     }
                     else
                     {
-                        return Redirect("/Users/Register");
+                        return Redirect("/Users/Users?area=Users");
                     }
+
                 }
+
             }
             else
             {
@@ -139,18 +156,19 @@ namespace In_Home.Areas.Users.Pages.Account
             }
 
         }
+
         private async Task<bool> SaveAsync()
         {
             _dataInput = Input;
             var valor = false;
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var userList = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList();
-                if(userList.Count.Equals(0))
+                if (userList.Count.Equals(0))
                 {
                     var strategy = _context.Database.CreateExecutionStrategy();
-                    await strategy.ExecuteAsync(async () => { 
-                        using(var transaction = _context.Database.BeginTransaction())
+                    await strategy.ExecuteAsync(async () => {
+                        using (var transaction = _context.Database.BeginTransaction())
                         {
                             try
                             {
@@ -161,11 +179,12 @@ namespace In_Home.Areas.Users.Pages.Account
                                     PhoneNumber = Input.PhoneNumber
                                 };
                                 var result = await _userManager.CreateAsync(user, Input.Password);
-                                if(result.Succeeded)
+                                if (result.Succeeded)
                                 {
                                     await _userManager.AddToRoleAsync(user, Input.Role);
                                     var dataUser = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList().Last();
-                                    var imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment, "images/images/user1.png");
+                                    var imageByte = await _uploadimage.ByteAvatarImageAsync(
+                                        Input.AvatarImage, _environment, "images/images/default.png");
                                     var t_user = new TUsers
                                     {
                                         Name = Input.Name,
@@ -181,20 +200,18 @@ namespace In_Home.Areas.Users.Pages.Account
                                     transaction.Commit();
                                     _dataInput = null;
                                     valor = true;
-
                                 }
                                 else
                                 {
-                                    foreach(var item in result.Errors)
+                                    foreach (var item in result.Errors)
                                     {
                                         _dataInput.ErrorMessage = item.Description;
-
                                     }
                                     valor = false;
                                     transaction.Rollback();
                                 }
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 _dataInput.ErrorMessage = ex.Message;
                                 transaction.Rollback();
@@ -205,27 +222,28 @@ namespace In_Home.Areas.Users.Pages.Account
                 }
                 else
                 {
-                    foreach(var modelState in ModelState.Values)
-                    {
-                        foreach(var error in modelState.Errors)
-                        {
-                            _dataInput.ErrorMessage += error.ErrorMessage;
-                        }
-                    }
-                    _dataInput.ErrorMessage = $"The  {Input.Email} is registered ";
+                    _dataInput.ErrorMessage = $"El {Input.Email} ya esta registrado";
                     valor = false;
                 }
             }
             else
             {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        _dataInput.ErrorMessage += error.ErrorMessage;
+                    }
+                }
                 valor = false;
             }
+
             return valor;
         }
         private List<SelectListItem> getRoles(String role)
         {
             List<SelectListItem> rolesLista = new List<SelectListItem>();
-            rolesLista.Add(new SelectListItem 
+            rolesLista.Add(new SelectListItem
             {
                 Text = role
             });
@@ -233,13 +251,13 @@ namespace In_Home.Areas.Users.Pages.Account
             roles.ForEach(item => {
                 if (item.Text != role)
                 {
-                    rolesLista.Add(new SelectListItem 
+                    rolesLista.Add(new SelectListItem
                     {
                         Text = item.Text
                     });
                 }
             });
-            return roles;
+            return rolesLista;
         }
         private async Task<bool> UpdateAsync()
         {
@@ -258,7 +276,7 @@ namespace In_Home.Areas.Users.Pages.Account
                         _context.Update(identityUser);
                         await _context.SaveChangesAsync();
 
-                        if(Input.AvatarImage == null)
+                        if (Input.AvatarImage == null)
                         {
                             imageByte = _dataUser2.Image;
                         }
@@ -278,16 +296,16 @@ namespace In_Home.Areas.Users.Pages.Account
                         };
                         _context.Update(t_user);
                         _context.SaveChanges();
-                        if(_dataUser2.Role != Input.Role)
+                        if (_dataUser2.Role != Input.Role)
                         {
                             await _userManager.RemoveFromRoleAsync(identityUser, _dataUser2.Role);
                             await _userManager.AddToRoleAsync(identityUser, Input.Role);
                         }
                         transaction.Commit();
-                        
+
                         valor = true;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         _dataInput.ErrorMessage = ex.Message;
                         transaction.Rollback();

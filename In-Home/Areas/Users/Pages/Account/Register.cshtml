@@ -87,7 +87,7 @@
                                             }
                                             else
                                             {
-                                                @Html.DropDownList("Input.Role", new SelectList(Model.Input.rolesLista, "Text", "Text"), "Select a ro", new { @class = "form-control" })
+                                                @Html.DropDownList("Input.Role", new SelectList(Model.Input.rolesLista, "Text", "Text"), "Select a role", new { @class = "form-control" })
                                             }
 
                                             <span asp-validation-for="Input.Role" class="text-danger"></span>
