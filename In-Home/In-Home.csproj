@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Users\Data\" />
-    <Folder Include="wwwroot\images\images\" />
   </ItemGroup>
 
 </Project>
