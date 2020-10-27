@@ -1,21 +1,20 @@
-﻿using In_Home.Areas.Users.Models;
-using In_Home.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using In_Home.Areas.Users.Models;
+using In_Home.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace In_Home.Library
 {
     public class LUser : ListObject
     {
-        public LUser
-            (UserManager<IdentityUser> userManager, 
-            SignInManager<IdentityUser> signInManager, 
-            RoleManager<IdentityRole> roleManager, 
+        public LUser(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context)
         {
             _userManager = userManager;
@@ -24,7 +23,6 @@ namespace In_Home.Library
             _context = context;
             _usersRole = new LUsersRoles();
         }
-        //Método
         public async Task<List<InputModelRegister>> getTUsuariosAsync(String valor, int id)
         {
             List<TUsers> listUser;
@@ -36,23 +34,23 @@ namespace In_Home.Library
             }
             else
             {
-                if(id.Equals(0))
+                if (id.Equals(0))
                 {
                     listUser = _context.TUsers.Where(u => u.CI.StartsWith(valor) || u.Name.StartsWith(valor) ||
-                    u.LastName.StartsWith(valor) || u.Email.StartsWith(valor)).ToList();
+              u.LastName.StartsWith(valor) || u.Email.StartsWith(valor)).ToList();
                 }
                 else
                 {
                     listUser = _context.TUsers.Where(u => u.ID.Equals(id)).ToList();
                 }
             }
-            if(!listUser.Count.Equals(0))
+            if (!listUser.Count.Equals(0))
             {
-                foreach(var item in listUser)
+                foreach (var item in listUser)
                 {
                     _listRoles = await _usersRole.getRole(_userManager, _roleManager, item.IdUser);
                     var user = _context.Users.Where(u => u.Id.Equals(item.IdUser)).ToList().Last();
-                    userList.Add(new InputModelRegister 
+                    userList.Add(new InputModelRegister
                     {
                         Id = item.ID,
                         ID = item.IdUser,
@@ -69,14 +67,14 @@ namespace In_Home.Library
             }
             return userList;
         }
-        internal async Task<SignInResult> UserLoginAsync(InputModelLogin model)
-        {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure:false);
-            if(result.Succeeded)
-            {
+        //internal async Task<SignInResult> UserLoginAsync(InputModelLogin model)
+        //{
+        //    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
+        //    if (result.Succeeded)
+        //    {
 
-            }
-            return result;
-        }
+        //    }
+        //    return result;
+        //}
     }
 }

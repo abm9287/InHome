@@ -4,21 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace In_Home.Areas.Users.Models
+namespace In_Home.Areas.Customers.Pages.Account
 {
     public class TClients
     {
         [Key]
-        public int IdClient { set; get; }
-        public string CI { set; get; }
-        public string Name { set; get; }
-        public string LastName { set; get; }
-        public string Email { set; get; }
-        public string Direction { set; get; }
-        public string Phone { set; get; }
-        public DateTime Date { set; get; }
-        public bool Credit { set; get; }
-        public byte[] Image { get; set; }
-        public List<TReports_clients> TReports_clients { get; set; }
+        public int IdClient {get;set;}
+        public string CI { get; set; } 
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Direction { get; set; }
+        public string Phone { get; set; }
+        public DateTime Date { get; set; } 
+        public bool Credit { get; set; }
+        public byte[] Image { get; set; } 
+        public List<TReports_clients> TReport_cliente { get; set; }
     }
 }

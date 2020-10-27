@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using In_Home.Areas.Customers.Pages.Account;
 using In_Home.Areas.Users.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace In_Home.Data
+namespace SalesSystem.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

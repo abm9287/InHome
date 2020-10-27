@@ -8,14 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using In_Home.Areas.Customers.Models;
 using In_Home.Data;
 using In_Home.Library;
 
-
 namespace In_Home.Areas.Customers.Pages.Account
 {
-
     [Authorize]
     [Area("Customers")]
     public class RegisterModel : PageModel
@@ -61,21 +60,21 @@ namespace In_Home.Areas.Customers.Pages.Account
             {
                 if (_dataClient2 == null)
                 {
-                    if (User.IsInRole("Admin"))
-                    {
-                        if (await SaveAsync())
-                        {
-                            return Redirect("/Customers/Customers?area=Customers");
-                        }
-                        else
-                        {
-                            return Redirect("/Customers/Register");
-                        }
-                    }
-                    else
+                    //if (User.IsInRole("Admin"))
+                    //{
+                    if (await SaveAsync())
                     {
                         return Redirect("/Customers/Customers?area=Customers");
                     }
+                    else
+                    {
+                        return Redirect("/Customers/Register");
+                    }
+                    //}
+                    //else
+                    //{
+                    //    return Redirect("/Customers/Customers?area=Customers");
+                    //}
                 }
                 else
                 {
@@ -94,6 +93,63 @@ namespace In_Home.Areas.Customers.Pages.Account
             if (ModelState.IsValid)
             {
                 var clientList = _context.TClients.Where(u => u.CI.Equals(Input.CI)).ToList();
+                if (clientList.Count.Equals(0))
+                {
+                    var strategy = _context.Database.CreateExecutionStrategy();
+                    await strategy.ExecuteAsync(async () => {
+                        using (var transaction = _context.Database.BeginTransaction())
+                        {
+
+                            try
+                            {
+                                var imageByte = await _uploadimage.ByteAvatarImageAsync(
+                                            Input.AvatarImage, _environment, "images/images/user1.png");
+                                var client = new TClients
+                                {
+                                    Name = Input.Name,
+                                    LastName = Input.LastName,
+                                    CI = Input.CI,
+                                    Email = Input.Email,
+                                    Image = imageByte,
+                                    Phone = Input.Phone,
+                                    Direction = Input.Direction,
+                                    Credit = Input.Credit,
+                                    Date = DateTime.Now
+                                };
+                                await _context.AddAsync(client);
+                                _context.SaveChanges();
+
+                                var report = new TReports_clients
+                                {
+                                    Debt = 0.0m,
+                                    Monthly = 0.0m,
+                                    Change = 0.0m,
+                                    LastPayment = 0.0m,
+                                    CurrentDebt = 0.0m,
+                                    Ticket = "0000000000",
+                                    TClients = client
+                                };
+                                await _context.AddAsync(report);
+                                _context.SaveChanges();
+                                transaction.Commit();
+                                _dataInput = null;
+                                valor = true;
+                            }
+                            catch (Exception ex)
+                            {
+
+                                _dataInput.ErrorMessage = ex.Message;
+                                transaction.Rollback();
+                                valor = false;
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    _dataInput.ErrorMessage = $"El {Input.CI} ya esta registrado";
+                    valor = false;
+                }
             }
             else
             {

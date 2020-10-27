@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace In_Home.Areas.Users.Models
+namespace In_Home.Areas.Customers.Pages.Account
 {
     public class TReports_clients
     {
