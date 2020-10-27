@@ -8,10 +8,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using In_Home.Areas.Users.Models;
 using In_Home.Data;
+using In_Home.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace In_Home.Areas.Users.Controllers
 {
     [Area("Users")]
+    [Authorize]
     public class UsersController : Controller
     {
         private SignInManager<IdentityUser> _signInManager;
@@ -22,18 +25,18 @@ namespace In_Home.Areas.Users.Controllers
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext context) 
+            ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _user = new LUser(userManager, signInManager, roleManager, context);
         }
         public IActionResult Users(int id, String filtrar, int registros)
         {
-            //if(_signInManager.IsSignedIn(User))
-            //{
+            if (_signInManager.IsSignedIn(User))
+            {
                 Object[] objects = new Object[3];
                 var data = _user.getTUsuariosAsync(filtrar, 0);
-                if(0<data.Result.Count)
+                if (0 < data.Result.Count)
                 {
                     var url = Request.Scheme + "://" + Request.Host.Value;
                     objects = new LPaginador<InputModelRegister>().paginador(data.Result, id, registros, "Users", "Users", "Users", url);
@@ -53,12 +56,16 @@ namespace In_Home.Areas.Users.Controllers
                     Input = new InputModelRegister(),
                 };
                 return View(models);
-            
-            //else
-            //{
-            //    return Redirect("/");
-            //}
-            
+            }
+            else
+            {
+                return Redirect("/");
+            }
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
     }
 }

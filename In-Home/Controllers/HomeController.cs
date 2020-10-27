@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using In_Home.Areas.Users.Models;
 using In_Home.Library;
 using In_Home.Data;
+using In_Home.Areas.Principal.Controllers;
 
 namespace In_Home.Controllers
 {
@@ -19,6 +20,8 @@ namespace In_Home.Controllers
         //IServiceProvider _serviceProvider;
         private static InputModelLogin _model;
         private LUser _user;
+        private SignInManager<IdentityUser> _signInManager;
+
         public HomeController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             RoleManager<IdentityRole> roleManager,
@@ -26,19 +29,26 @@ namespace In_Home.Controllers
             IServiceProvider serviceProvider)
         {
             //_serviceProvider = serviceProvider;
+            _signInManager = signInManager;
             _user = new LUser(userManager, signInManager, roleManager, contex);
         }
 
         public async Task<IActionResult> Index()
         {
             //await CreateRolesAsync(_serviceProvider);
-            if(_model != null)
+            if(_signInManager.IsSignedIn(User))
             {
-                return View(_model);
-            }
-            else
+                return RedirectToAction(nameof(PrincipalController.Principal), "Principal");
+            }else
             {
-                return View();
+                if (_model != null)
+                {
+                    return View(_model);
+                }
+                else
+                {
+                    return View();
+                }
             }
         }
         [HttpPost]
