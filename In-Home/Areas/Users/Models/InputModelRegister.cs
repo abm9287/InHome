@@ -26,7 +26,7 @@ namespace In_Home.Areas.Users.Models
         public string PhoneNumber { get; set; }
         //Campo Email
         [Required(ErrorMessage = "Email field is required")]
-        [EmailAddress(ErrorMessage = "Email is not a valid email addressa.")]
+        [EmailAddress(ErrorMessage = "Email is not a valid email address.")]
         public string Email { get; set; }
         //Campo contraseña
         [Display(Name = "Password")]

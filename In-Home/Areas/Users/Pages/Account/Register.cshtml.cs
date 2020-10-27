@@ -47,6 +47,7 @@ namespace In_Home.Areas.Users.Pages.Account
         }
         public void OnGet(int id)
         {
+            _dataUser2 = null;
             if (id.Equals(0))
             {
                 _dataUser2 = null;
