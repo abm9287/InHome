@@ -14,5 +14,6 @@ namespace In_Home.Data
         {
         }
         public DbSet<TUsers> TUsers { get; set; }
+        public IEnumerable<object> TClients { get; internal set; }
     }
 }
