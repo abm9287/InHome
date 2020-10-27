@@ -69,5 +69,14 @@ namespace In_Home.Library
             }
             return userList;
         }
+        internal async Task<SignInResult> UserLoginAsync(InputModelLogin model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure:false);
+            if(result.Succeeded)
+            {
+
+            }
+            return result;
+        }
     }
 }
