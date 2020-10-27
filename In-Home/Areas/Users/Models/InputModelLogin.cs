@@ -14,6 +14,7 @@ namespace In_Home.Areas.Users.Models
         public string Email { get; set; }
         //Campo contraseña
         [Display(Name = "Password")]
+        [DataType(DataType.Password)]//Oculta la contraseña
         [Required(ErrorMessage = "Password field is required.")]
         [StringLength(100, ErrorMessage = "The number of characters in {0} must be at least {2}.", MinimumLength = 8)]
         public string Password { get; set; }
