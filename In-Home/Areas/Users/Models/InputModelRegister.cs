@@ -26,10 +26,8 @@ namespace In_Home.Areas.Users.Models
         [Required(ErrorMessage = "Password field is required.")]
         [StringLength(100, ErrorMessage = "The number of characters in {0} must be at least {2}.", MinimumLength = 8)]
         public string Password { get; set; }
-        [Required(ErrorMessage = "Password field is required")]
+        [Required(ErrorMessage = "Rol  field is required")]
         public string Role { get; set; }
-
-        //Propiedades
         public string ID { get; set; }
         public int Id { get; set; }
         public byte[] Image { get; set; }

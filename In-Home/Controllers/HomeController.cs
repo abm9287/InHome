@@ -8,22 +8,50 @@ using Microsoft.Extensions.Logging;
 using In_Home.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using In_Home.Areas.Users.Models;
 
 namespace In_Home.Controllers
 {
     public class HomeController : Controller
     {
-        IServiceProvider _serviceProvider;
-
+        //IServiceProvider _serviceProvider;
+        private static InputModelLogin _model;
         public HomeController(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            //_serviceProvider = serviceProvider;
         }
 
         public async Task<IActionResult> Index()
         {
-            await CreateRolesAsync(_serviceProvider);
-            return View();
+            //await CreateRolesAsync(_serviceProvider);
+            if (_model != null)
+            {
+                return View(_model);
+            }
+            else
+            {
+                return View();
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(InputModelLogin model)
+        {
+            _model = model;
+            if (ModelState.IsValid)
+            {
+                return View();
+            }
+            else
+            {
+                foreach(var modelState in ModelState.Values)
+                {
+                    foreach(var error in modelState.Errors)
+                    {
+                        _model.ErrorMessage = error.ErrorMessage ;
+                    }
+                }
+                return Redirect("/");
+            }
         }
 
         public IActionResult Privacy()
