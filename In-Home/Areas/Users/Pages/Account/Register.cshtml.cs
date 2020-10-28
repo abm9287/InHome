@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace In_Home.Areas.Users.Pages.Account
 {
@@ -23,10 +24,9 @@ namespace In_Home.Areas.Users.Pages.Account
         private ApplicationDbContext _context;
         private LUsersRoles _usersRole;
         private static InputModel _dataInput;
-        private Uploadimage _uploadimage; 
+        private Uploadimage _uploadimage;
+        private static InputModelRegister _dataUser1, _dataUser2;
         private IWebHostEnvironment _environment;
-
-
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -41,11 +41,10 @@ namespace In_Home.Areas.Users.Pages.Account
             _environment = environment;
             _usersRole = new LUsersRoles();
             _uploadimage = new Uploadimage();
-
         }
         public void OnGet()
         {
-            if(_dataInput != null)
+            if (_dataInput != null)
             {
                 Input = _dataInput;
                 Input.rolesLista = _usersRole.getRoles(_roleManager);
@@ -58,7 +57,22 @@ namespace In_Home.Areas.Users.Pages.Account
                     rolesLista = _usersRole.getRoles(_roleManager)
                 };
             }
-          
+            if (_dataUser1 != null)
+            {
+                Input = new InputModel
+                {
+                    Name = _dataUser1.Name,
+                    LastName = _dataUser1.LastName,
+                    CI = _dataUser1.CI,
+                    Email = _dataUser1.Email,
+                    Image = _dataUser1.Image,
+                    PhoneNumber = _dataUser1.IdentityUser.PhoneNumber,
+                    rolesLista = getRoles(_dataUser1.Role),
+
+                };
+            }
+            _dataUser2 = _dataUser1;
+            _dataUser1 = null;
         }
         [BindProperty]
         public InputModel Input { get; set; }
@@ -69,29 +83,39 @@ namespace In_Home.Areas.Users.Pages.Account
             public string ErrorMessage { get; set; }
             public List<SelectListItem> rolesLista { get; set; }
         }
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost(String dataUser)
         {
-            if(await SaveAsync())
+            if (dataUser == null)
             {
-                return Redirect("/Users/Users?are=Users");
+
+                if (await SaveAsync())
+                {
+                    return Redirect("/Users/Users?area=Users");
+                }
+                else
+                {
+                    return Redirect("/Users/Register");
+                }
             }
             else
             {
+                _dataUser1 = JsonConvert.DeserializeObject<InputModelRegister>(dataUser);
                 return Redirect("/Users/Register");
             }
+
         }
         private async Task<bool> SaveAsync()
         {
             _dataInput = Input;
             var valor = false;
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var userList = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList();
-                if(userList.Count.Equals(0))
+                if (userList.Count.Equals(0))
                 {
                     var strategy = _context.Database.CreateExecutionStrategy();
-                    await strategy.ExecuteAsync(async () => { 
-                        using(var transaction = _context.Database.BeginTransaction())
+                    await strategy.ExecuteAsync(async () => {
+                        using (var transaction = _context.Database.BeginTransaction())
                         {
                             try
                             {
@@ -102,11 +126,12 @@ namespace In_Home.Areas.Users.Pages.Account
                                     PhoneNumber = Input.PhoneNumber
                                 };
                                 var result = await _userManager.CreateAsync(user, Input.Password);
-                                if(result.Succeeded)
+                                if (result.Succeeded)
                                 {
                                     await _userManager.AddToRoleAsync(user, Input.Role);
                                     var dataUser = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList().Last();
-                                    var imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment, "images/images/user1.png");
+                                    var imageByte = await _uploadimage.ByteAvatarImageAsync(
+                                        Input.AvatarImage, _environment, "images/images/default.png");
                                     var t_user = new TUsers
                                     {
                                         Name = Input.Name,
@@ -122,20 +147,18 @@ namespace In_Home.Areas.Users.Pages.Account
                                     transaction.Commit();
                                     _dataInput = null;
                                     valor = true;
-
                                 }
                                 else
                                 {
-                                    foreach(var item in result.Errors)
+                                    foreach (var item in result.Errors)
                                     {
                                         _dataInput.ErrorMessage = item.Description;
-
                                     }
                                     valor = false;
                                     transaction.Rollback();
                                 }
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 _dataInput.ErrorMessage = ex.Message;
                                 transaction.Rollback();
@@ -146,22 +169,42 @@ namespace In_Home.Areas.Users.Pages.Account
                 }
                 else
                 {
-                    foreach(var modelState in ModelState.Values)
-                    {
-                        foreach(var error in modelState.Errors)
-                        {
-                            _dataInput.ErrorMessage += error.ErrorMessage;
-                        }
-                    }
-                    _dataInput.ErrorMessage = $"The  {Input.Email} is registered ";
+                    _dataInput.ErrorMessage = $"El {Input.Email} ya esta registrado";
                     valor = false;
                 }
             }
             else
             {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        _dataInput.ErrorMessage += error.ErrorMessage;
+                    }
+                }
                 valor = false;
             }
+
             return valor;
+        }
+        private List<SelectListItem> getRoles(String role)
+        {
+            List<SelectListItem> rolesLista = new List<SelectListItem>();
+            rolesLista.Add(new SelectListItem
+            {
+                Text = role
+            });
+            var roles = _usersRole.getRoles(_roleManager);
+            roles.ForEach(item => {
+                if (item.Text != role)
+                {
+                    rolesLista.Add(new SelectListItem
+                    {
+                        Text = item.Text
+                    });
+                }
+            });
+            return rolesLista;
         }
     }
 }
