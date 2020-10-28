@@ -206,5 +206,39 @@ namespace In_Home.Areas.Users.Pages.Account
             });
             return rolesLista;
         }
+        private async Task<bool> UpdateAsync()
+        {
+            var valor = false;
+            byte[] imageByte = null;
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () => {
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var identityUser = _userManager.Users.Where(u => u.Id.Equals(_dataUser2.ID)).ToList().Last();
+                        identityUser.UserName = Input.Email;
+                        identityUser.Email = Input.Email;
+                        identityUser.PhoneNumber = Input.PhoneNumber;
+                        _context.Update(identityUser);
+                        await _context.SaveChangesAsync();
+
+                        if(Input.AvatarImage == null)
+                        {
+                            imageByte = _dataUser2.Image;
+                        }
+                        else
+                        {
+                            imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment, "");
+                        }
+                    }
+                    catch(Exception)
+                    {
+                        throw;
+                    }
+                }
+            });
+            return valor;
+        }
     }
 }
