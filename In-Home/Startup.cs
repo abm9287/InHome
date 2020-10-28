@@ -67,7 +67,8 @@ namespace In_Home
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapAreaControllerRoute("Users", "Users", "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapAreaControllerRoute("Users", "Users", "{controller=Users}/{action=Users}/{id?}");
+                endpoints.MapAreaControllerRoute("Principal", "Principal", "{controller=Principal}/{action=Principal}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

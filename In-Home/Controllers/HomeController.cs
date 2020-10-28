@@ -9,6 +9,8 @@ using In_Home.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using In_Home.Areas.Users.Models;
+using In_Home.Library;
+using In_Home.Data;
 
 namespace In_Home.Controllers
 {
@@ -16,9 +18,16 @@ namespace In_Home.Controllers
     {
         //IServiceProvider _serviceProvider;
         private static InputModelLogin _model;
-        public HomeController(IServiceProvider serviceProvider)
+        private LUser _user;
+        public HomeController(
+            UserManager<IdentityUser> userManager,
+                SignInManager<IdentityUser> signInManager,
+                RoleManager<IdentityRole> roleManager,
+                ApplicationDbContext contex,
+                IServiceProvider serviceProvider)
         {
             //_serviceProvider = serviceProvider;
+            _user = new LUser(userManager, signInManager, roleManager, contex);
         }
 
         public async Task<IActionResult> Index()
@@ -39,7 +48,16 @@ namespace In_Home.Controllers
             _model = model;
             if (ModelState.IsValid)
             {
-                return View();
+                var result = await _user.UserLoginAsync(model);
+                if(result.Succeeded)
+                {
+                    return Redirect("/Principal/Principal");
+                }
+                else
+                {
+                    model.ErrorMessage = "The email or password are incorrect";
+                    return Redirect("/");
+                }
             }
             else
             {
