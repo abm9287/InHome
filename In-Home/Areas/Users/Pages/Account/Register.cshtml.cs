@@ -42,33 +42,49 @@ namespace In_Home.Areas.Users.Pages.Account
             _usersRole = new LUsersRoles();
             _uploadimage = new Uploadimage();
         }
-        public void OnGet()
+        public void OnGet(int id)
         {
-            if (_dataInput != null)
+            if(id.Equals(0))
             {
-                Input = _dataInput;
-                Input.rolesLista = _usersRole.getRoles(_roleManager);
-                Input.AvatarImage = null;
+                _dataUser2 = null;
+            }
+            if (_dataInput != null || _dataUser1 != null || _dataUser2 !=null)
+            {
+                if (_dataInput != null)
+                {
+                    Input = _dataInput;
+                    Input.rolesLista = _usersRole.getRoles(_roleManager);
+                    Input.AvatarImage = null;
+                }
+                else
+                {
+                    if(_dataInput != null || _dataUser1 != null || _dataUser2 != null)
+                    {
+                        if (_dataUser2 != null)
+                            _dataUser1 = _dataUser2;
+                        Input = new InputModel
+                        {
+                            Id = _dataUser1.Id,
+                            Name = _dataUser1.Name,
+                            LastName = _dataUser1.LastName,
+                            CI = _dataUser1.CI,
+                            Email = _dataUser1.Email,
+                            Image = _dataUser1.Image,
+                            PhoneNumber = _dataUser1.IdentityUser.PhoneNumber,
+                            rolesLista = getRoles(_dataUser1.Role),
+                        };
+                        if(_dataInput != null)
+                        {
+                            Input.ErrorMessage = _dataInput.ErrorMessage;
+                        }
+                    }
+                }
             }
             else
             {
                 Input = new InputModel
                 {
                     rolesLista = _usersRole.getRoles(_roleManager)
-                };
-            }
-            if (_dataUser1 != null)
-            {
-                Input = new InputModel
-                {
-                    Name = _dataUser1.Name,
-                    LastName = _dataUser1.LastName,
-                    CI = _dataUser1.CI,
-                    Email = _dataUser1.Email,
-                    Image = _dataUser1.Image,
-                    PhoneNumber = _dataUser1.IdentityUser.PhoneNumber,
-                    rolesLista = getRoles(_dataUser1.Role),
-
                 };
             }
             _dataUser2 = _dataUser1;
@@ -100,7 +116,7 @@ namespace In_Home.Areas.Users.Pages.Account
             else
             {
                 _dataUser1 = JsonConvert.DeserializeObject<InputModelRegister>(dataUser);
-                return Redirect("/Users/Register");
+                return Redirect("/Users/Register?id=1");
             }
 
         }
@@ -231,6 +247,18 @@ namespace In_Home.Areas.Users.Pages.Account
                         {
                             imageByte = await _uploadimage.ByteAvatarImageAsync(Input.AvatarImage, _environment, "");
                         }
+                        var t_user = new TUsers
+                        {
+                            ID = _dataUser2.Id,
+                            Name = Input.Name,
+                            LastName = Input.LastName,
+                            CI = Input.CI,
+                            Email = Input.Email,
+                            IdUser = _dataUser2.ID,
+                            Image = imageByte,
+                        };
+                        _context.Update(t_user);
+                        _context.SaveChanges();
                     }
                     catch(Exception)
                     {
