@@ -32,7 +32,7 @@
             <div class="col-xs-6 col-md-5">
                 <div class="panel  panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title">REGISTER USERS</h3>
+                        <h3 class="panel-title">REGISTRAR USUARIO</h3>
                     </div>
                     <div class="panel-body">
                         <div class="accordion" id="accordionExample">
@@ -51,29 +51,29 @@
                                      data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="form-group">
-                                            <input asp-for="Input.CI" placeholder="C.I" class="form-control" autofocus />
+                                            <input asp-for="Input.CI" placeholder="Cédula de Identidad" class="form-control" autofocus />
                                             <span asp-validation-for="Input.CI" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <input asp-for="Input.Name" placeholder="Name" class="form-control" />
+                                            <input asp-for="Input.Name" placeholder="Nombres" class="form-control" />
                                             <span asp-validation-for="Input.Name" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <input asp-for="Input.LastName" placeholder="Last Name" class="form-control" />
+                                            <input asp-for="Input.LastName" placeholder="Apellidos" class="form-control" />
                                             <span asp-validation-for="Input.LastName" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <input asp-for="Input.PhoneNumber" placeholder="Phone Number" class="form-control" />
+                                            <input asp-for="Input.PhoneNumber" placeholder="Número de Teléfono" class="form-control" />
                                             <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <input asp-for="Input.Email" placeholder="Email" class="form-control" />
+                                            <input asp-for="Input.Email" placeholder="Correo electrónico" class="form-control" />
                                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                                         </div>
                                         @if (Model.Input.Id.Equals(0))
                                         {
                                             <div class="form-group">
-                                                <input asp-for="Input.Password" placeholder="Password" class="form-control" />
+                                                <input asp-for="Input.Password" placeholder="Contraseña" class="form-control" />
                                                 <span asp-validation-for="Input.Password" class="text-danger"></span>
                                             </div>
                                         }
@@ -91,7 +91,7 @@
                                         <span asp-validation-for="Input.Role" class="text-danger"></span>
                                     </div>
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                                            <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
                                         </div>
                                         <div class="form-group">
                                             <label class="text-danger">@Html.DisplayFor(m => m.Input.ErrorMessage)  </label>
