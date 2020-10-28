@@ -103,14 +103,29 @@ namespace In_Home.Areas.Users.Pages.Account
         {
             if (dataUser == null)
             {
-
-                if (await SaveAsync())
+                if(_dataUser2 == null)
                 {
-                    return Redirect("/Users/Users?area=Users");
+                    if (await SaveAsync())
+                    {
+                        return Redirect("/Users/Users?area=Users");
+                    }
+                    else
+                    {
+                        return Redirect("/Users/Register");
+                    }
                 }
                 else
                 {
-                    return Redirect("/Users/Register");
+                   if(await UpdateAsync())
+                    {
+                        var url = $"/Users/Account/Details?id={_dataUser2.Id}";
+                        _dataUser2 = null;
+                        return Redirect(url);
+                    }
+                    else
+                    {
+                        return Redirect("/Users/Register");
+                    }
                 }
             }
             else
@@ -118,7 +133,6 @@ namespace In_Home.Areas.Users.Pages.Account
                 _dataUser1 = JsonConvert.DeserializeObject<InputModelRegister>(dataUser);
                 return Redirect("/Users/Register?id=1");
             }
-
         }
         private async Task<bool> SaveAsync()
         {
@@ -185,7 +199,7 @@ namespace In_Home.Areas.Users.Pages.Account
                 }
                 else
                 {
-                    _dataInput.ErrorMessage = $"El {Input.Email} ya esta registrado";
+                    _dataInput.ErrorMessage = $"The  {Input.Email} is already registered";
                     valor = false;
                 }
             }
@@ -200,7 +214,6 @@ namespace In_Home.Areas.Users.Pages.Account
                 }
                 valor = false;
             }
-
             return valor;
         }
         private List<SelectListItem> getRoles(String role)
@@ -259,10 +272,19 @@ namespace In_Home.Areas.Users.Pages.Account
                         };
                         _context.Update(t_user);
                         _context.SaveChanges();
+                        if(_dataUser2.Role != Input.Role)
+                        {
+                            await _userManager.RemoveFromRoleAsync(identityUser, _dataUser2.Role);
+                            await _userManager.AddToRoleAsync(identityUser, Input.Role);
+                        }
+                        transaction.Commit();
+                        valor = true;
                     }
-                    catch(Exception)
+                    catch(Exception ex)
                     {
-                        throw;
+                        _dataInput.ErrorMessage = ex.Message;
+                        transaction.Rollback();
+                        valor = false;
                     }
                 }
             });
