@@ -7,87 +7,119 @@ namespace In_Home.Library
 {
     public class LPaginador<T>
     {
-        /*Atributos
-        Cantidad de resultados o registros por página  */
-        private int pagina_cuantos = 8;
-        //Cantidad de enlaces que se mostrarán como máximo en la barra de navegación 'enlaces numéricos que se visualizarán
-        private int pagina_nav_num_enlaces = 3;
-        private int pagina_actual; //Atributo que contendrá en # de páginas
-        //Definimos que irá en el enlace a la página anterior 
-        private String pagina_nav_anterior = "&laquo; Anterior";
-        //Definimos que irá en el enlace a la siguiente página
-        private String pagina_nav_siguiente = "Siguiente &raqueo;";
-        //Se define que irá en el enlace a la página siguiente
-        private String pagina_nav_primera = "&laquo; Primero";
-        private String pagina_nav_ultima = "Último &raquo;";
-        private String pagina_navegacion = null;
+        //cantidad de resultados por página 
+        private int pagi_cuantos = 8;
+        //cantidad de enlaces que se mostrarán como máximo en la barra de navegación 
+        private int pagi_nav_num_enlaces = 3;
+        private int pagi_actual;
+        //definimos qué irá en el enlace a la página anterior 
+        private String pagi_nav_anterior = " &laquo; Anterior ";
+        //definimos qué irá en el enlace a la página siguiente 
+        private String pagi_nav_siguiente = " Next  &raquo; ";
+        //definimos qué irá en el enlace a la página siguiente 
+        private String pagi_nav_primera = " &laquo; Primero ";
+        private String pagi_nav_ultima = " Last  &raquo; ";
+        private String pagi_navegacion = null;
 
-        //Método
-        public object[] paginador(List<T> table, int pagina,int registros ,String area, String controller, String action, String host)
+        public object[] paginador(List<T> table, int pagina, int registros, String area, String controller,
+            String action, String host)
         {
-            pagina_actual = pagina == 0 ? 1 : pagina;
-            pagina_cuantos = registros > 0 ? registros : pagina_cuantos;
+            pagi_actual = pagina == 0 ? 1 : pagina;
+            pagi_cuantos = registros > 0 ? registros : pagi_cuantos;
 
-            int pagina_totalRegistro = table.Count;
-            //Procedimiento para calcular las páginas de los registros que se están generando
-            double valor1 = Math.Ceiling((double)pagina_totalRegistro / (double)pagina_cuantos);
-            int pagina_totalPaginas = Convert.ToInt16(Math.Ceiling(valor1));
-            if(pagina_actual !=1)
+            int pagi_totalReg = table.Count;
+            double valor1 = Math.Ceiling((double)pagi_totalReg / (double)pagi_cuantos);
+            int pagi_totalPags = Convert.ToInt16(Math.Ceiling(valor1));
+            if (pagi_actual != 1)
             {
-                //si no está en la página N° 1, ponemos  el enlace "Primera"
-                int pagina_url = 1;
-                pagina_navegacion += "<a class='btn btn-default' href='" 
-                    + host + "/" + controller + "/" + action + "?id=" + pagina_url + "&registros=" + pagina_cuantos + "&area=" + area
-                    + "'>" + pagina_nav_primera + "</a>" ;
+                // Si no estamos en la página 1. Ponemos el enlace "primera" 
+                int pagi_url = 1; //será el número de página al que enlazamos 
+                pagi_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/"
+                    + action + "?id=" + pagi_url + "&registros=" + pagi_cuantos + "&area=" + area + "'>"
+                    + pagi_nav_primera + "</a>";
 
-                //Si no está en la página 1 Ponemos el enlace "Anterior"
-                pagina_url = pagina_actual - 1; //Este será el # de página al que enlazamos
-                pagina_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/" + action + "?id=" + pagina_url + "&registros=" + pagina_cuantos + "&area=" + area + "'>" + pagina_nav_anterior; 
+                // Si no estamos en la página 1. Ponemos el enlace "anterior" 
+                pagi_url = pagi_actual - 1; //será el número de página al que enlazamos 
+                pagi_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/" + action
+                    + "?id=" + pagi_url + "&registros=" + pagi_cuantos + "&area=" + area + "'>"
+                    + pagi_nav_anterior + " </a>";
             }
-            /*Si se definió la variable pagina_nav_num_enlaces. Calculamos el intervalo para restar y sumar a partir de la página actual */
-            double valor2 = (pagina_nav_num_enlaces/2); 
-            int pagina_nav_intervalo = Convert.ToInt16(Math.Round(valor2));
-            int pagina_nav_desde = pagina_actual - pagina_nav_intervalo; // Calcula desde aquí qué número de página se mostrará
-            int pagina_nav_hasta = pagina_actual + pagina_nav_intervalo; //Calcula hasta qué número de página se mostrará
-            if(pagina_nav_desde <1 )
+            // Si se definió la variable pagi_nav_num_enlaces 
+            // Calculamos el intervalo para restar y sumar a partir de la página actual 
+            double valor2 = (pagi_nav_num_enlaces / 2);
+            int pagi_nav_intervalo = Convert.ToInt16(Math.Round(valor2));
+            // Calculamos desde qué número de página se mostrará 
+            int pagi_nav_desde = pagi_actual - pagi_nav_intervalo;
+            // Calculamos hasta qué número de página se mostrará 
+            int pagi_nav_hasta = pagi_actual + pagi_nav_intervalo;
+            // Si pagi_nav_desde es un número negativo
+            if (pagi_nav_desde < 1)
             {
-                pagina_nav_hasta -= (pagina_nav_desde - 1); //Le sumamos la cantidad sobrante al final para mantener el número de enlaces que se quiere mostrar
-                pagina_nav_desde = 1; //Establece pagina_nav_desde como 1
+                // Le sumamos la cantidad sobrante al final para mantener
+                //el número de enlaces que se quiere mostrar.  
+                pagi_nav_hasta -= (pagi_nav_desde - 1);
+                // Establecemos pagi_nav_desde como 1. 
+                pagi_nav_desde = 1;
             }
-            if(pagina_nav_hasta > pagina_totalPaginas) //Si pagina_nav_hasta es un número mayor que el total de páginas
+            // Si pagi_nav_hasta es un número mayor que el total de páginas 
+            if (pagi_nav_hasta > pagi_totalPags)
             {
-                pagina_nav_desde -= (pagina_nav_hasta - pagina_totalPaginas); // Le restamos la cantidad excedida al comienzo para antener el número de enlaces que se quiere mostrar
-                pagina_nav_hasta = pagina_totalPaginas; // Establecemos pagina_nav_hasta como el total de páginas.
-                if(pagina_nav_desde <1)
+                // Le restamos la cantidad excedida al comienzo para mantener 
+                //el número de enlaces que se quiere mostrar. 
+                pagi_nav_desde -= (pagi_nav_hasta - pagi_totalPags);
+                // Establecemos pagi_nav_hasta como el total de páginas. 
+                pagi_nav_hasta = pagi_totalPags;
+                // Hacemos el último ajuste verificando que al cambiar pagi_nav_desde 
+                //no haya quedado con un valor no válido. 
+                if (pagi_nav_desde < 1)
                 {
-                    pagina_nav_desde = 1;
+                    pagi_nav_desde = 1;
                 }
             }
-            for(int pagina_i = pagina_nav_desde; pagina_i <= pagina_nav_hasta; pagina_i++)
+            for (int pagi_i = pagi_nav_desde; pagi_i <= pagi_nav_hasta; pagi_i++)
             {
-                if(pagina_i == pagina_actual)
+                //Desde página 1 hasta última página (pagi_totalPags) 
+                if (pagi_i == pagi_actual)
                 {
-                    pagina_navegacion += "<span clas=='btn btn-default' disabled='disabled'>" + pagina_i +"</span>";
+                    // Si el número de página es la actual (pagi_actual). Se escribe el número, pero sin enlace y en negrita. 
+                    pagi_navegacion += "<span class='btn btn-default' disabled='disabled'>" + pagi_i + "</span>";
                 }
                 else
                 {
-                    pagina_navegacion += "<a class='btn btn-default' href='" + host +"/" + action +"?id=" + pagina_i + "&registros=" + pagina_cuantos + "&area=" + area + "'>" + pagina_i +  "</a>";
+                    // Si es cualquier otro. Se escribe el enlace a dicho número de página. 
+                    pagi_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/" +
+                        action + "?id=" + pagi_i + "&registros=" + pagi_cuantos + "&area=" + area + "'>" +
+                        pagi_i + " </a>";
                 }
             }
-            if(pagina_actual < pagina_totalPaginas)
+            if (pagi_actual < pagi_totalPags)
             {
-                int pagina_url = pagina_actual + 1; //Si no estamos en la última página ponemos el enlace "Siguiente"
-                pagina_navegacion += "<a class=''btn btn-default' href='" + host + "/" + controller + "/" + action + "?id=" + pagina_url + "&registros=" + pagina_cuantos + "$area" + area + "'>" + pagina_nav_siguiente + "</nav>";
+                // Si no estamos en la última página. Ponemos el enlace "Siguiente" 
+                int pagi_url = pagi_actual + 1; //será el número de página al que enlazamos 
+                pagi_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/" +
+                    action + "?id=" + pagi_url + "&registros=" + pagi_cuantos + "&area=" + area + "'>" +
+                    pagi_nav_siguiente + "</a>";
 
-                //Si no estamos en la última página, ponemos el enlace "Última"
-                pagina_url = pagina_totalPaginas; //será el número de páginas al que enlazamos
-                pagina_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/" + action + "?id=" + pagina_url + "&registros" + pagina_cuantos + "&area=" + area + "'>" + pagina_nav_ultima + "</a>";
+                // Si no estamos en la última página. Ponemos el enlace "Última" 
+                pagi_url = pagi_totalPags; //será el número de página al que enlazamos 
+                pagi_navegacion += "<a class='btn btn-default' href='" + host + "/" + controller + "/" +
+                    action + "?id=" + pagi_url + "&registros=" + pagi_cuantos + "&area=" + area + "'>" +
+                    pagi_nav_ultima + "</a>";
+
             }
-            //Obtención de los registros que se mostrarán en la página actual
-            int pagina_inicial = (pagina_actual - 1) * pagina_cuantos;
-            var query = table.Skip(pagina_inicial).Take(pagina_cuantos).ToList(); //Consulta SQL que devuelve cantidad de registros empezando desde pagina_inicial
-            String pagina_informacion = "del <br>" + pagina_actual + "</br> al <br>" + pagina_totalPaginas + "</br> de <br>" + pagina_totalRegistro + "</br> <br>" + pagina_cuantos + "</br>";
-            object[] data = { pagina_informacion, pagina_navegacion, query };
+            /* 
+       * Obtención de los registros que se mostrarán en la página actual. 
+       *------------------------------------------------------------------------ 
+       */
+            // Calculamos desde qué registro se mostrará en esta página 
+            // Recordemos que el conteo empieza desde CERO. 
+            int pagi_inicial = (pagi_actual - 1) * pagi_cuantos;
+            // Consulta SQL. Devuelve cantidad registros empezando desde pagi_inicial
+
+            var query = table.Skip(pagi_inicial).Take(pagi_cuantos).ToList();
+            String pagi_info = " del <b>" + pagi_actual + "</b> al <b>" + pagi_totalPags + "</b> de <b>" +
+               pagi_totalReg + "</b> <b>/" + pagi_cuantos + " </b>";
+            object[] data = { pagi_info, pagi_navegacion, query };
             return data;
         }
     }
