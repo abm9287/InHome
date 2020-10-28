@@ -66,7 +66,16 @@ Lista de usuarios registrados
 
 
 Information
+-------------------------
 C.I
+----------------------
 Name
+-----------
 Phone Number 
+----------------
 Email
+------------------
+
+
+![imagen](https://user-images.githubusercontent.com/49075053/97475479-4ce7c080-191b-11eb-80e5-f38beb692c35.png)
+Filtro de los usuarios registrados en InHome.
