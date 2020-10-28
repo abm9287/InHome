@@ -185,7 +185,7 @@ namespace In_Home.Areas.Users.Pages.Account
                 }
                 else
                 {
-                    _dataInput.ErrorMessage = $"El {Input.Email} ya esta registrado";
+                    _dataInput.ErrorMessage = $"The  {Input.Email} is already registered";
                     valor = false;
                 }
             }
