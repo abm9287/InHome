@@ -95,8 +95,8 @@ namespace In_Home.Areas.Users.Pages.Account
         public class InputModel : InputModelRegister
         {
             public IFormFile AvatarImage { get; set; }
-            [TempData]
-            public string ErrorMessage { get; set; }
+            //[TempData]
+            //public string ErrorMessage { get; set; }
             public List<SelectListItem> rolesLista { get; set; }
         }
         public async Task<IActionResult> OnPost(String dataUser)
